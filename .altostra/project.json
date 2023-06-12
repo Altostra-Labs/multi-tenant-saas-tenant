@@ -288,65 +288,6 @@
 					},
 					"type": "resource.api"
 				},
-				"OtherResources01": {
-					"type": "resource.cloud-formation.custom-resources",
-					"name": "CustomResources",
-					"resources": {
-						"AssociateUsagePlanWithTenantAPI": {
-							"Type": "Custom::AssociateUsagePlanWithTenantAPI",
-							"DependsOn": "UpdateUsagePlanFunction",
-							"Properties": {
-								"ServiceToken": {
-									"Fn::GetAtt": [
-										"UpdateUsagePlanFunction01",
-										"Arn"
-									]
-								},
-								"ApiGatewayId": {
-									"Ref": "ApiGatewayTenantApi"
-								},
-								"SettingsTableName": "ServerlessSaaS-Settings",
-								"IsPooledDeploy": true,
-								"Stage": {
-									"Ref": "Prod"
-								},
-								"UsagePlanBasicTier": {
-									"Fn::ImportValue": "Serverless-SaaS-UsagePlanBasicTier"
-								},
-								"UsagePlanStandardTier": {
-									"Fn::ImportValue": "Serverless-SaaS-UsagePlanStandardTier"
-								},
-								"UsagePlanPremiumTier": {
-									"Fn::ImportValue": "Serverless-SaaS-UsagePlanPremiumTier"
-								},
-								"UsagePlanPlatinumTier": {
-									"Fn::ImportValue": "Serverless-SaaS-UsagePlanPlatinumTier"
-								}
-							}
-						},
-						"UpdateTenantApiGatewayUrl": {
-							"Type": "Custom::UpdateTenantApiGatewayUrl",
-							"DependsOn": "UpdateTenantApiGatewayUrlFunction",
-							"Properties": {
-								"ServiceToken": {
-									"Fn::GetAtt": [
-										"UpdateTenantApiGatewayUrlFunction01",
-										"Arn"
-									]
-								},
-								"TenantDetailsTableName": "ServerlessSaaS-TenantDetails",
-								"SettingsTableName": "ServerlessSaaS-Settings",
-								"TenantId": {
-									"Ref": "TenantIdParameter"
-								},
-								"TenantApiGatewayUrl": {
-									"Fn::Sub": "https://${ApiGatewayTenantApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
-								}
-							}
-						}
-					},
-					"id": "OtherResources01"
-				},
 				"GetProductFunction01": {
 					"type": "resource.compute.function",
 					"name": "GetProductFunction",
@@ -978,11 +919,6 @@
 			"metadata": {
 				"designer": {
 					"resourcePositions": {
-						"OtherResources01": {
-							"x": 0,
-							"y": 50,
-							"z": 0
-						},
 						"ProductTable": {
 							"x": -290,
 							"y": 270,
@@ -1081,7 +1017,7 @@
 					}
 				}
 			},
-			"unsafe": true,
+			"unsafe": false,
 			"globalEnvironmentVariables": {
 				"POWERTOOLS_METRICS_NAMESPACE": "ServerlessSaaS",
 				"LOG_LEVEL": "DEBUG"
