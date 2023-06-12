@@ -528,7 +528,7 @@
 					"name": "TenantSettingsTable",
 					"externalResourceType": "resource.table",
 					"identifierType": "table-arn",
-					"identifier": "TableName",
+					"identifier": "arn:aws:dynamodb:us-east-1:123456789012:table/TableName",
 					"id": "TenantSettingsTable01"
 				},
 				"UpdateUsagePlanFunction01": {
@@ -608,7 +608,7 @@
 					"name": "TenantDetailsTable",
 					"externalResourceType": "resource.table",
 					"identifierType": "table-arn",
-					"identifier": "TableName",
+					"identifier": "arn:aws:dynamodb:us-east-1:123456789012:table/TableName",
 					"id": "TenantDetailsTable01"
 				},
 				"UpdateTenantApiGatewayUrlFunction01": {
