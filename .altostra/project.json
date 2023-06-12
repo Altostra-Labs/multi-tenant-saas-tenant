@@ -1,1398 +1,1053 @@
 {
-  "id": "multi-tenant-saas-tenant",
-  "name": "multi-tenant-saas-tenant",
-  "type": "altostra",
-  "description": "An empty project template",
-  "created": "2023-06-11T15:40:58.491Z",
-  "blueprints": [
-    {
-      "id": "ImportedBlueprint_md0044o",
-      "name": "Imported blueprint",
-      "description": "Serverless SaaS Reference Architecture \n",
-      "version": "2019-10-24",
-      "resources": {
-        "ProductTable": {
-          "id": "ProductTable",
-          "name": "Product-pooled",
-          "tableName": "Product-pooled",
-          "key": {
-            "hash": {
-              "name": "shardId",
-              "type": "STRING"
-            },
-            "range": {
-              "name": "productId",
-              "type": "STRING"
-            }
-          },
-          "aws": {
-            "billingModel": "PROVISIONED",
-            "throughput": {
-              "readUnits": 5,
-              "writeUnits": 5
-            }
-          },
-          "type": "resource.table"
-        },
-        "OrderTable": {
-          "id": "OrderTable",
-          "name": "Order-pooled",
-          "tableName": "Order-pooled",
-          "key": {
-            "hash": {
-              "name": "shardId",
-              "type": "STRING"
-            },
-            "range": {
-              "name": "orderId",
-              "type": "STRING"
-            }
-          },
-          "aws": {
-            "billingModel": "PROVISIONED",
-            "throughput": {
-              "readUnits": 5,
-              "writeUnits": 5
-            }
-          },
-          "type": "resource.table"
-        },
-        "CreateProductFunction": {
-          "id": "CreateProductFunction",
-          "name": "CreateProductFunction",
-          "memory": 512,
-          "timeout": 6,
-          "tags": {
-            "TenantId": "pooled"
-          },
-          "packageType": "zip",
-          "runtime": "python3.9",
-          "entryPoint": "product_service.create_product",
-          "policies": [
-            "arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy",
-            "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-            "arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess"
-          ],
-          "trace": true,
-          "environment": {
-            "variables": {
-              "POWERTOOLS_SERVICE_NAME": "ProductService"
-            }
-          },
-          "type": "resource.compute.function"
-        },
-        "UpdateProductFunction": {
-          "id": "UpdateProductFunction",
-          "name": "UpdateProductFunction",
-          "memory": 512,
-          "timeout": 6,
-          "tags": {
-            "TenantId": "pooled"
-          },
-          "packageType": "zip",
-          "runtime": "python3.9",
-          "entryPoint": "product_service.update_product",
-          "policies": [
-            "arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy",
-            "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-            "arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess"
-          ],
-          "trace": true,
-          "environment": {
-            "variables": {
-              "POWERTOOLS_SERVICE_NAME": "ProductService"
-            }
-          },
-          "type": "resource.compute.function"
-        },
-        "DeleteProductFunction": {
-          "id": "DeleteProductFunction",
-          "name": "DeleteProductFunction",
-          "memory": 512,
-          "timeout": 6,
-          "tags": {
-            "TenantId": "pooled"
-          },
-          "packageType": "zip",
-          "runtime": "python3.9",
-          "entryPoint": "product_service.delete_product",
-          "policies": [
-            "arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy",
-            "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-            "arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess"
-          ],
-          "trace": true,
-          "environment": {
-            "variables": {
-              "POWERTOOLS_SERVICE_NAME": "ProductService"
-            }
-          },
-          "type": "resource.compute.function"
-        },
-        "CreateOrderFunction": {
-          "id": "CreateOrderFunction",
-          "name": "CreateOrderFunction",
-          "memory": 512,
-          "timeout": 6,
-          "tags": {
-            "TenantId": "pooled"
-          },
-          "packageType": "zip",
-          "runtime": "python3.9",
-          "entryPoint": "order_service.create_order",
-          "policies": [
-            "arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy",
-            "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-            "arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess"
-          ],
-          "trace": true,
-          "environment": {
-            "variables": {
-              "POWERTOOLS_SERVICE_NAME": "OrderService"
-            }
-          },
-          "type": "resource.compute.function"
-        },
-        "UpdateOrderFunction": {
-          "id": "UpdateOrderFunction",
-          "name": "UpdateOrderFunction",
-          "memory": 512,
-          "timeout": 6,
-          "tags": {
-            "TenantId": "pooled"
-          },
-          "packageType": "zip",
-          "runtime": "python3.9",
-          "entryPoint": "order_service.update_order",
-          "policies": [
-            "arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy",
-            "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-            "arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess"
-          ],
-          "trace": true,
-          "environment": {
-            "variables": {
-              "POWERTOOLS_SERVICE_NAME": "OrderService"
-            }
-          },
-          "type": "resource.compute.function"
-        },
-        "DeleteOrderFunction": {
-          "id": "DeleteOrderFunction",
-          "name": "DeleteOrderFunction",
-          "memory": 512,
-          "timeout": 6,
-          "tags": {
-            "TenantId": "pooled"
-          },
-          "packageType": "zip",
-          "runtime": "python3.9",
-          "entryPoint": "order_service.delete_order",
-          "policies": [
-            "arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy",
-            "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-            "arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess"
-          ],
-          "trace": true,
-          "environment": {
-            "variables": {
-              "POWERTOOLS_SERVICE_NAME": "OrderService"
-            }
-          },
-          "type": "resource.compute.function"
-        },
-        "ApiGatewayTenantApi": {
-          "id": "ApiGatewayTenantApi",
-          "name": "ApiGatewayTenantApi",
-          "endpoints": [],
-          "cors": {
-            "type": "api.cors.none"
-          },
-          "type": "resource.api"
-        },
-        "OtherResources01": {
-          "type": "resource.cloud-formation.custom-resources",
-          "name": "other resources",
-          "resources": {
-            "ServerlessSaaSLayers": {
-              "Type": "AWS::Serverless::LayerVersion",
-              "Properties": {
-                "LayerName": {
-                  "Fn::Join": [
-                    "-",
-                    [
-                      "serverless-saas-dependencies",
-                      {
-                        "Ref": "TenantIdParameter"
-                      }
-                    ]
-                  ]
-                },
-                "Description": "Utilities for project",
-                "ContentUri": "layers/",
-                "CompatibleRuntimes": [
-                  "python3.9"
-                ],
-                "LicenseInfo": "MIT",
-                "RetentionPolicy": "Retain"
-              },
-              "Metadata": {
-                "BuildMethod": "python3.9"
-              }
-            },
-            "GetProductFunction": {
-              "Type": "AWS::Serverless::Function",
-              "DependsOn": "ProductFunctionExecutionRole",
-              "Properties": {
-                "CodeUri": "ProductService/",
-                "Handler": "product_service.get_product",
-                "Runtime": "python3.9",
-                "Tracing": "Active",
-                "Role": {
-                  "Fn::GetAtt": [
-                    "ProductFunctionExecutionRole",
-                    "Arn"
-                  ]
-                },
-                "ReservedConcurrentExecutions": {
-                  "Fn::If": [
-                    "IsPooledDeploy",
-                    {
-                      "Ref": "AWS::NoValue"
-                    },
-                    {
-                      "Ref": "LambdaReserveConcurrency"
-                    }
-                  ]
-                },
-                "Layers": [
-                  {
-                    "Ref": "ServerlessSaaSLayers"
-                  }
-                ],
-                "Environment": {
-                  "Variables": {
-                    "POWERTOOLS_SERVICE_NAME": "ProductService",
-                    "IS_POOLED_DEPLOY": {
-                      "Fn::If": [
-                        "IsPooledDeploy",
-                        true,
-                        false
-                      ]
-                    },
-                    "PRODUCT_TABLE_NAME": {
-                      "Ref": "ProductTable"
-                    }
-                  }
-                },
-                "AutoPublishAlias": "live",
-                "DeploymentPreference": {
-                  "Enabled": {
-                    "Ref": "LambdaCanaryDeploymentPreference"
-                  },
-                  "Type": "Canary10Percent5Minutes",
-                  "Alarms": [
-                    {
-                      "Ref": "GetProductFunctionCanaryErrorsAlarm"
-                    }
-                  ]
-                },
-                "Tags": {
-                  "TenantId": {
-                    "Ref": "TenantIdParameter"
-                  }
-                }
-              }
-            },
-            "GetProductFunctionCanaryErrorsAlarm": {
-              "Type": "AWS::CloudWatch::Alarm",
-              "Properties": {
-                "AlarmDescription": "Lambda function canary errors",
-                "ComparisonOperator": "GreaterThanThreshold",
-                "EvaluationPeriods": 2,
-                "MetricName": "Errors",
-                "Namespace": "AWS/Lambda",
-                "Period": 60,
-                "Statistic": "Sum",
-                "Threshold": 0,
-                "Dimensions": [
-                  {
-                    "Name": "Resource",
-                    "Value": {
-                      "Fn::Sub": "${GetProductFunction}:live"
-                    }
-                  },
-                  {
-                    "Name": "FunctionName",
-                    "Value": {
-                      "Ref": "GetProductFunction"
-                    }
-                  },
-                  {
-                    "Name": "ExecutedVersion",
-                    "Value": {
-                      "Fn::GetAtt": [
-                        "GetProductFunction",
-                        "Version.Version"
-                      ]
-                    }
-                  }
-                ]
-              }
-            },
-            "GetProductsFunction": {
-              "Type": "AWS::Serverless::Function",
-              "DependsOn": "ProductFunctionExecutionRole",
-              "Properties": {
-                "CodeUri": "ProductService/",
-                "Handler": "product_service.get_products",
-                "Runtime": "python3.9",
-                "Tracing": "Active",
-                "Role": {
-                  "Fn::GetAtt": [
-                    "ProductFunctionExecutionRole",
-                    "Arn"
-                  ]
-                },
-                "ReservedConcurrentExecutions": {
-                  "Fn::If": [
-                    "IsPooledDeploy",
-                    {
-                      "Ref": "AWS::NoValue"
-                    },
-                    {
-                      "Ref": "LambdaReserveConcurrency"
-                    }
-                  ]
-                },
-                "Layers": [
-                  {
-                    "Ref": "ServerlessSaaSLayers"
-                  }
-                ],
-                "Environment": {
-                  "Variables": {
-                    "POWERTOOLS_SERVICE_NAME": "ProductService",
-                    "IS_POOLED_DEPLOY": {
-                      "Fn::If": [
-                        "IsPooledDeploy",
-                        true,
-                        false
-                      ]
-                    },
-                    "PRODUCT_TABLE_NAME": {
-                      "Ref": "ProductTable"
-                    }
-                  }
-                },
-                "AutoPublishAlias": "live",
-                "DeploymentPreference": {
-                  "Enabled": {
-                    "Ref": "LambdaCanaryDeploymentPreference"
-                  },
-                  "Type": "Canary10Percent5Minutes",
-                  "Alarms": [
-                    {
-                      "Ref": "GetProductsFunctionCanaryErrorsAlarm"
-                    }
-                  ]
-                },
-                "Tags": {
-                  "TenantId": {
-                    "Ref": "TenantIdParameter"
-                  }
-                }
-              }
-            },
-            "GetProductsFunctionCanaryErrorsAlarm": {
-              "Type": "AWS::CloudWatch::Alarm",
-              "Properties": {
-                "AlarmDescription": "Lambda function canary errors",
-                "ComparisonOperator": "GreaterThanThreshold",
-                "EvaluationPeriods": 2,
-                "MetricName": "Errors",
-                "Namespace": "AWS/Lambda",
-                "Period": 60,
-                "Statistic": "Sum",
-                "Threshold": 0,
-                "Dimensions": [
-                  {
-                    "Name": "Resource",
-                    "Value": {
-                      "Fn::Sub": "${GetProductsFunction}:live"
-                    }
-                  },
-                  {
-                    "Name": "FunctionName",
-                    "Value": {
-                      "Ref": "GetProductsFunction"
-                    }
-                  },
-                  {
-                    "Name": "ExecutedVersion",
-                    "Value": {
-                      "Fn::GetAtt": [
-                        "GetProductsFunction",
-                        "Version.Version"
-                      ]
-                    }
-                  }
-                ]
-              }
-            },
-            "CreateProductFunctionCanaryErrorsAlarm": {
-              "Type": "AWS::CloudWatch::Alarm",
-              "Properties": {
-                "AlarmDescription": "Lambda function canary errors",
-                "ComparisonOperator": "GreaterThanThreshold",
-                "EvaluationPeriods": 2,
-                "MetricName": "Errors",
-                "Namespace": "AWS/Lambda",
-                "Period": 60,
-                "Statistic": "Sum",
-                "Threshold": 0,
-                "Dimensions": [
-                  {
-                    "Name": "Resource",
-                    "Value": {
-                      "Fn::Sub": "${CreateProductFunction}:live"
-                    }
-                  },
-                  {
-                    "Name": "FunctionName",
-                    "Value": {
-                      "Ref": "CreateProductFunction"
-                    }
-                  },
-                  {
-                    "Name": "ExecutedVersion",
-                    "Value": {
-                      "Fn::GetAtt": [
-                        "CreateProductFunction",
-                        "Version.Version"
-                      ]
-                    }
-                  }
-                ]
-              }
-            },
-            "UpdateProductFunctionCanaryErrorsAlarm": {
-              "Type": "AWS::CloudWatch::Alarm",
-              "Properties": {
-                "AlarmDescription": "Lambda function canary errors",
-                "ComparisonOperator": "GreaterThanThreshold",
-                "EvaluationPeriods": 2,
-                "MetricName": "Errors",
-                "Namespace": "AWS/Lambda",
-                "Period": 60,
-                "Statistic": "Sum",
-                "Threshold": 0,
-                "Dimensions": [
-                  {
-                    "Name": "Resource",
-                    "Value": {
-                      "Fn::Sub": "${UpdateProductFunction}:live"
-                    }
-                  },
-                  {
-                    "Name": "FunctionName",
-                    "Value": {
-                      "Ref": "UpdateProductFunction"
-                    }
-                  },
-                  {
-                    "Name": "ExecutedVersion",
-                    "Value": {
-                      "Fn::GetAtt": [
-                        "UpdateProductFunction",
-                        "Version.Version"
-                      ]
-                    }
-                  }
-                ]
-              }
-            },
-            "DeleteProductFunctionCanaryErrorsAlarm": {
-              "Type": "AWS::CloudWatch::Alarm",
-              "Properties": {
-                "AlarmDescription": "Lambda function canary errors",
-                "ComparisonOperator": "GreaterThanThreshold",
-                "EvaluationPeriods": 2,
-                "MetricName": "Errors",
-                "Namespace": "AWS/Lambda",
-                "Period": 60,
-                "Statistic": "Sum",
-                "Threshold": 0,
-                "Dimensions": [
-                  {
-                    "Name": "Resource",
-                    "Value": {
-                      "Fn::Sub": "${DeleteProductFunction}:live"
-                    }
-                  },
-                  {
-                    "Name": "FunctionName",
-                    "Value": {
-                      "Ref": "DeleteProductFunction"
-                    }
-                  },
-                  {
-                    "Name": "ExecutedVersion",
-                    "Value": {
-                      "Fn::GetAtt": [
-                        "DeleteProductFunction",
-                        "Version.Version"
-                      ]
-                    }
-                  }
-                ]
-              }
-            },
-            "GetOrdersFunction": {
-              "Type": "AWS::Serverless::Function",
-              "DependsOn": "OrderFunctionExecutionRole",
-              "Properties": {
-                "CodeUri": "OrderService/",
-                "Handler": "order_service.get_orders",
-                "Runtime": "python3.9",
-                "Tracing": "Active",
-                "Role": {
-                  "Fn::GetAtt": [
-                    "OrderFunctionExecutionRole",
-                    "Arn"
-                  ]
-                },
-                "ReservedConcurrentExecutions": {
-                  "Fn::If": [
-                    "IsPooledDeploy",
-                    {
-                      "Ref": "AWS::NoValue"
-                    },
-                    {
-                      "Ref": "LambdaReserveConcurrency"
-                    }
-                  ]
-                },
-                "Layers": [
-                  {
-                    "Ref": "ServerlessSaaSLayers"
-                  }
-                ],
-                "Environment": {
-                  "Variables": {
-                    "POWERTOOLS_SERVICE_NAME": "OrderService",
-                    "IS_POOLED_DEPLOY": {
-                      "Fn::If": [
-                        "IsPooledDeploy",
-                        true,
-                        false
-                      ]
-                    },
-                    "ORDER_TABLE_NAME": {
-                      "Ref": "OrderTable"
-                    }
-                  }
-                },
-                "AutoPublishAlias": "live",
-                "DeploymentPreference": {
-                  "Enabled": {
-                    "Ref": "LambdaCanaryDeploymentPreference"
-                  },
-                  "Type": "Canary10Percent5Minutes",
-                  "Alarms": [
-                    {
-                      "Ref": "GetOrdersFunctionCanaryErrorsAlarm"
-                    }
-                  ]
-                },
-                "Tags": {
-                  "TenantId": {
-                    "Ref": "TenantIdParameter"
-                  }
-                }
-              }
-            },
-            "GetOrdersFunctionCanaryErrorsAlarm": {
-              "Type": "AWS::CloudWatch::Alarm",
-              "Properties": {
-                "AlarmDescription": "Lambda function canary errors",
-                "ComparisonOperator": "GreaterThanThreshold",
-                "EvaluationPeriods": 2,
-                "MetricName": "Errors",
-                "Namespace": "AWS/Lambda",
-                "Period": 60,
-                "Statistic": "Sum",
-                "Threshold": 0,
-                "Dimensions": [
-                  {
-                    "Name": "Resource",
-                    "Value": {
-                      "Fn::Sub": "${GetOrdersFunction}:live"
-                    }
-                  },
-                  {
-                    "Name": "FunctionName",
-                    "Value": {
-                      "Ref": "GetOrdersFunction"
-                    }
-                  },
-                  {
-                    "Name": "ExecutedVersion",
-                    "Value": {
-                      "Fn::GetAtt": [
-                        "GetOrdersFunction",
-                        "Version.Version"
-                      ]
-                    }
-                  }
-                ]
-              }
-            },
-            "GetOrderFunction": {
-              "Type": "AWS::Serverless::Function",
-              "DependsOn": "OrderFunctionExecutionRole",
-              "Properties": {
-                "CodeUri": "OrderService/",
-                "Handler": "order_service.get_order",
-                "Runtime": "python3.9",
-                "Tracing": "Active",
-                "Role": {
-                  "Fn::GetAtt": [
-                    "OrderFunctionExecutionRole",
-                    "Arn"
-                  ]
-                },
-                "ReservedConcurrentExecutions": {
-                  "Fn::If": [
-                    "IsPooledDeploy",
-                    {
-                      "Ref": "AWS::NoValue"
-                    },
-                    {
-                      "Ref": "LambdaReserveConcurrency"
-                    }
-                  ]
-                },
-                "Layers": [
-                  {
-                    "Ref": "ServerlessSaaSLayers"
-                  }
-                ],
-                "Environment": {
-                  "Variables": {
-                    "POWERTOOLS_SERVICE_NAME": "OrderService",
-                    "IS_POOLED_DEPLOY": {
-                      "Fn::If": [
-                        "IsPooledDeploy",
-                        true,
-                        false
-                      ]
-                    },
-                    "ORDER_TABLE_NAME": {
-                      "Ref": "OrderTable"
-                    }
-                  }
-                },
-                "AutoPublishAlias": "live",
-                "DeploymentPreference": {
-                  "Enabled": {
-                    "Ref": "LambdaCanaryDeploymentPreference"
-                  },
-                  "Type": "Canary10Percent5Minutes",
-                  "Alarms": [
-                    {
-                      "Ref": "GetOrderFunctionCanaryErrorsAlarm"
-                    }
-                  ]
-                },
-                "Tags": {
-                  "TenantId": {
-                    "Ref": "TenantIdParameter"
-                  }
-                }
-              }
-            },
-            "GetOrderFunctionCanaryErrorsAlarm": {
-              "Type": "AWS::CloudWatch::Alarm",
-              "Properties": {
-                "AlarmDescription": "Lambda function canary errors",
-                "ComparisonOperator": "GreaterThanThreshold",
-                "EvaluationPeriods": 2,
-                "MetricName": "Errors",
-                "Namespace": "AWS/Lambda",
-                "Period": 60,
-                "Statistic": "Sum",
-                "Threshold": 0,
-                "Dimensions": [
-                  {
-                    "Name": "Resource",
-                    "Value": {
-                      "Fn::Sub": "${GetOrderFunction}:live"
-                    }
-                  },
-                  {
-                    "Name": "FunctionName",
-                    "Value": {
-                      "Ref": "GetOrderFunction"
-                    }
-                  },
-                  {
-                    "Name": "ExecutedVersion",
-                    "Value": {
-                      "Fn::GetAtt": [
-                        "GetOrderFunction",
-                        "Version.Version"
-                      ]
-                    }
-                  }
-                ]
-              }
-            },
-            "CreateOrderFunctionCanaryErrorsAlarm": {
-              "Type": "AWS::CloudWatch::Alarm",
-              "Properties": {
-                "AlarmDescription": "Lambda function canary errors",
-                "ComparisonOperator": "GreaterThanThreshold",
-                "EvaluationPeriods": 2,
-                "MetricName": "Errors",
-                "Namespace": "AWS/Lambda",
-                "Period": 60,
-                "Statistic": "Sum",
-                "Threshold": 0,
-                "Dimensions": [
-                  {
-                    "Name": "Resource",
-                    "Value": {
-                      "Fn::Sub": "${CreateOrderFunction}:live"
-                    }
-                  },
-                  {
-                    "Name": "FunctionName",
-                    "Value": {
-                      "Ref": "CreateOrderFunction"
-                    }
-                  },
-                  {
-                    "Name": "ExecutedVersion",
-                    "Value": {
-                      "Fn::GetAtt": [
-                        "CreateOrderFunction",
-                        "Version.Version"
-                      ]
-                    }
-                  }
-                ]
-              }
-            },
-            "UpdateOrderFunctionCanaryErrorsAlarm": {
-              "Type": "AWS::CloudWatch::Alarm",
-              "Properties": {
-                "AlarmDescription": "Lambda function canary errors",
-                "ComparisonOperator": "GreaterThanThreshold",
-                "EvaluationPeriods": 2,
-                "MetricName": "Errors",
-                "Namespace": "AWS/Lambda",
-                "Period": 60,
-                "Statistic": "Sum",
-                "Threshold": 0,
-                "Dimensions": [
-                  {
-                    "Name": "Resource",
-                    "Value": {
-                      "Fn::Sub": "${UpdateOrderFunction}:live"
-                    }
-                  },
-                  {
-                    "Name": "FunctionName",
-                    "Value": {
-                      "Ref": "UpdateOrderFunction"
-                    }
-                  },
-                  {
-                    "Name": "ExecutedVersion",
-                    "Value": {
-                      "Fn::GetAtt": [
-                        "UpdateOrderFunction",
-                        "Version.Version"
-                      ]
-                    }
-                  }
-                ]
-              }
-            },
-            "DeleteOrderFunctionCanaryErrorsAlarm": {
-              "Type": "AWS::CloudWatch::Alarm",
-              "Properties": {
-                "AlarmDescription": "Lambda function canary errors",
-                "ComparisonOperator": "GreaterThanThreshold",
-                "EvaluationPeriods": 2,
-                "MetricName": "Errors",
-                "Namespace": "AWS/Lambda",
-                "Period": 60,
-                "Statistic": "Sum",
-                "Threshold": 0,
-                "Dimensions": [
-                  {
-                    "Name": "Resource",
-                    "Value": {
-                      "Fn::Sub": "${DeleteOrderFunction}:live"
-                    }
-                  },
-                  {
-                    "Name": "FunctionName",
-                    "Value": {
-                      "Ref": "DeleteOrderFunction"
-                    }
-                  },
-                  {
-                    "Name": "ExecutedVersion",
-                    "Value": {
-                      "Fn::GetAtt": [
-                        "DeleteOrderFunction",
-                        "Version.Version"
-                      ]
-                    }
-                  }
-                ]
-              }
-            },
-            "ApiGatewayAccessLogs": {
-              "Type": "AWS::Logs::LogGroup",
-              "Properties": {
-                "LogGroupName": {
-                  "Fn::Join": [
-                    "-",
-                    [
-                      "/aws/api-gateway/access-logs-serverless-saas-tenant-api-",
-                      {
-                        "Ref": "TenantIdParameter"
-                      }
-                    ]
-                  ]
-                },
-                "RetentionInDays": 30
-              }
-            },
-            "GetProductsLambdaApiGatewayExecutionPermission": {
-              "Type": "AWS::Lambda::Permission",
-              "Properties": {
-                "Action": "lambda:InvokeFunction",
-                "FunctionName": {
-                  "Fn::GetAtt": [
-                    "GetProductsFunction",
-                    "Arn"
-                  ]
-                },
-                "Principal": "apigateway.amazonaws.com",
-                "SourceArn": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:execute-api:",
-                      {
-                        "Ref": "AWS::Region"
-                      },
-                      ":",
-                      {
-                        "Ref": "AWS::AccountId"
-                      },
-                      ":",
-                      {
-                        "Ref": "ApiGatewayTenantApi"
-                      },
-                      "/*/*/*"
-                    ]
-                  ]
-                }
-              }
-            },
-            "GetProductLambdaApiGatewayExecutionPermission": {
-              "Type": "AWS::Lambda::Permission",
-              "Properties": {
-                "Action": "lambda:InvokeFunction",
-                "FunctionName": {
-                  "Fn::GetAtt": [
-                    "GetProductFunction",
-                    "Arn"
-                  ]
-                },
-                "Principal": "apigateway.amazonaws.com",
-                "SourceArn": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:execute-api:",
-                      {
-                        "Ref": "AWS::Region"
-                      },
-                      ":",
-                      {
-                        "Ref": "AWS::AccountId"
-                      },
-                      ":",
-                      {
-                        "Ref": "ApiGatewayTenantApi"
-                      },
-                      "/*/*/*"
-                    ]
-                  ]
-                }
-              }
-            },
-            "CreateProductLambdaApiGatewayExecutionPermission": {
-              "Type": "AWS::Lambda::Permission",
-              "Properties": {
-                "Action": "lambda:InvokeFunction",
-                "FunctionName": {
-                  "Fn::GetAtt": [
-                    "CreateProductFunction",
-                    "Arn"
-                  ]
-                },
-                "Principal": "apigateway.amazonaws.com",
-                "SourceArn": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:execute-api:",
-                      {
-                        "Ref": "AWS::Region"
-                      },
-                      ":",
-                      {
-                        "Ref": "AWS::AccountId"
-                      },
-                      ":",
-                      {
-                        "Ref": "ApiGatewayTenantApi"
-                      },
-                      "/*/*/*"
-                    ]
-                  ]
-                }
-              }
-            },
-            "UpdateProductLambdaApiGatewayExecutionPermission": {
-              "Type": "AWS::Lambda::Permission",
-              "Properties": {
-                "Action": "lambda:InvokeFunction",
-                "FunctionName": {
-                  "Fn::GetAtt": [
-                    "UpdateProductFunction",
-                    "Arn"
-                  ]
-                },
-                "Principal": "apigateway.amazonaws.com",
-                "SourceArn": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:execute-api:",
-                      {
-                        "Ref": "AWS::Region"
-                      },
-                      ":",
-                      {
-                        "Ref": "AWS::AccountId"
-                      },
-                      ":",
-                      {
-                        "Ref": "ApiGatewayTenantApi"
-                      },
-                      "/*/*/*"
-                    ]
-                  ]
-                }
-              }
-            },
-            "DeleteProductLambdaApiGatewayExecutionPermission": {
-              "Type": "AWS::Lambda::Permission",
-              "Properties": {
-                "Action": "lambda:InvokeFunction",
-                "FunctionName": {
-                  "Fn::GetAtt": [
-                    "DeleteProductFunction",
-                    "Arn"
-                  ]
-                },
-                "Principal": "apigateway.amazonaws.com",
-                "SourceArn": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:execute-api:",
-                      {
-                        "Ref": "AWS::Region"
-                      },
-                      ":",
-                      {
-                        "Ref": "AWS::AccountId"
-                      },
-                      ":",
-                      {
-                        "Ref": "ApiGatewayTenantApi"
-                      },
-                      "/*/*/*"
-                    ]
-                  ]
-                }
-              }
-            },
-            "GetOrdersLambdaApiGatewayExecutionPermission": {
-              "Type": "AWS::Lambda::Permission",
-              "Properties": {
-                "Action": "lambda:InvokeFunction",
-                "FunctionName": {
-                  "Fn::GetAtt": [
-                    "GetOrdersFunction",
-                    "Arn"
-                  ]
-                },
-                "Principal": "apigateway.amazonaws.com",
-                "SourceArn": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:execute-api:",
-                      {
-                        "Ref": "AWS::Region"
-                      },
-                      ":",
-                      {
-                        "Ref": "AWS::AccountId"
-                      },
-                      ":",
-                      {
-                        "Ref": "ApiGatewayTenantApi"
-                      },
-                      "/*/*/*"
-                    ]
-                  ]
-                }
-              }
-            },
-            "GetOrderLambdaApiGatewayExecutionPermission": {
-              "Type": "AWS::Lambda::Permission",
-              "Properties": {
-                "Action": "lambda:InvokeFunction",
-                "FunctionName": {
-                  "Fn::GetAtt": [
-                    "GetOrderFunction",
-                    "Arn"
-                  ]
-                },
-                "Principal": "apigateway.amazonaws.com",
-                "SourceArn": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:execute-api:",
-                      {
-                        "Ref": "AWS::Region"
-                      },
-                      ":",
-                      {
-                        "Ref": "AWS::AccountId"
-                      },
-                      ":",
-                      {
-                        "Ref": "ApiGatewayTenantApi"
-                      },
-                      "/*/*/*"
-                    ]
-                  ]
-                }
-              }
-            },
-            "CreateOrderLambdaApiGatewayExecutionPermission": {
-              "Type": "AWS::Lambda::Permission",
-              "Properties": {
-                "Action": "lambda:InvokeFunction",
-                "FunctionName": {
-                  "Fn::GetAtt": [
-                    "CreateOrderFunction",
-                    "Arn"
-                  ]
-                },
-                "Principal": "apigateway.amazonaws.com",
-                "SourceArn": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:execute-api:",
-                      {
-                        "Ref": "AWS::Region"
-                      },
-                      ":",
-                      {
-                        "Ref": "AWS::AccountId"
-                      },
-                      ":",
-                      {
-                        "Ref": "ApiGatewayTenantApi"
-                      },
-                      "/*/*/*"
-                    ]
-                  ]
-                }
-              }
-            },
-            "UpdateOrderLambdaApiGatewayExecutionPermission": {
-              "Type": "AWS::Lambda::Permission",
-              "Properties": {
-                "Action": "lambda:InvokeFunction",
-                "FunctionName": {
-                  "Fn::GetAtt": [
-                    "UpdateOrderFunction",
-                    "Arn"
-                  ]
-                },
-                "Principal": "apigateway.amazonaws.com",
-                "SourceArn": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:execute-api:",
-                      {
-                        "Ref": "AWS::Region"
-                      },
-                      ":",
-                      {
-                        "Ref": "AWS::AccountId"
-                      },
-                      ":",
-                      {
-                        "Ref": "ApiGatewayTenantApi"
-                      },
-                      "/*/*/*"
-                    ]
-                  ]
-                }
-              }
-            },
-            "DeleteOrderLambdaApiGatewayExecutionPermission": {
-              "Type": "AWS::Lambda::Permission",
-              "Properties": {
-                "Action": "lambda:InvokeFunction",
-                "FunctionName": {
-                  "Fn::GetAtt": [
-                    "DeleteOrderFunction",
-                    "Arn"
-                  ]
-                },
-                "Principal": "apigateway.amazonaws.com",
-                "SourceArn": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:execute-api:",
-                      {
-                        "Ref": "AWS::Region"
-                      },
-                      ":",
-                      {
-                        "Ref": "AWS::AccountId"
-                      },
-                      ":",
-                      {
-                        "Ref": "ApiGatewayTenantApi"
-                      },
-                      "/*/*/*"
-                    ]
-                  ]
-                }
-              }
-            },
-            "AuthorizerLambdaApiGatewayExecutionPermission": {
-              "Type": "AWS::Lambda::Permission",
-              "Properties": {
-                "Action": "lambda:InvokeFunction",
-                "FunctionName": {
-                  "Fn::ImportValue": "Serverless-SaaS-AuthorizerFunctionArn"
-                },
-                "Principal": "apigateway.amazonaws.com",
-                "SourceArn": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:execute-api:",
-                      {
-                        "Ref": "AWS::Region"
-                      },
-                      ":",
-                      {
-                        "Ref": "AWS::AccountId"
-                      },
-                      ":",
-                      {
-                        "Ref": "ApiGatewayTenantApi"
-                      },
-                      "/*/*"
-                    ]
-                  ]
-                }
-              }
-            },
-            "UpdateUsagePlanFunction": {
-              "Type": "AWS::Serverless::Function",
-              "DependsOn": "UpdateUsagePlanLambdaExecutionRole",
-              "Properties": {
-                "CodeUri": "custom_resources/",
-                "Handler": "update_usage_plan.handler",
-                "Runtime": "python3.9",
-                "Role": {
-                  "Fn::GetAtt": [
-                    "UpdateUsagePlanLambdaExecutionRole",
-                    "Arn"
-                  ]
-                },
-                "Layers": [
-                  {
-                    "Ref": "ServerlessSaaSLayers"
-                  }
-                ]
-              }
-            },
-            "AssociateUsagePlanWithTenantAPI": {
-              "Type": "Custom::AssociateUsagePlanWithTenantAPI",
-              "DependsOn": "UpdateUsagePlanFunction",
-              "Properties": {
-                "ServiceToken": {
-                  "Fn::GetAtt": [
-                    "UpdateUsagePlanFunction",
-                    "Arn"
-                  ]
-                },
-                "ApiGatewayId": {
-                  "Ref": "ApiGatewayTenantApi"
-                },
-                "SettingsTableName": "ServerlessSaaS-Settings",
-                "IsPooledDeploy": {
-                  "Fn::If": [
-                    "IsPooledDeploy",
-                    true,
-                    false
-                  ]
-                },
-                "Stage": {
-                  "Ref": "StageName"
-                },
-                "UsagePlanBasicTier": {
-                  "Fn::ImportValue": "Serverless-SaaS-UsagePlanBasicTier"
-                },
-                "UsagePlanStandardTier": {
-                  "Fn::ImportValue": "Serverless-SaaS-UsagePlanStandardTier"
-                },
-                "UsagePlanPremiumTier": {
-                  "Fn::ImportValue": "Serverless-SaaS-UsagePlanPremiumTier"
-                },
-                "UsagePlanPlatinumTier": {
-                  "Fn::ImportValue": "Serverless-SaaS-UsagePlanPlatinumTier"
-                }
-              }
-            },
-            "UpdateTenantApiGatewayUrlFunction": {
-              "Type": "AWS::Serverless::Function",
-              "DependsOn": "UpdateTenantApiGatewayUrlLambdaExecutionRole",
-              "Properties": {
-                "CodeUri": "custom_resources/",
-                "Handler": "update_tenant_apigatewayurl.handler",
-                "Runtime": "python3.9",
-                "Role": {
-                  "Fn::GetAtt": [
-                    "UpdateTenantApiGatewayUrlLambdaExecutionRole",
-                    "Arn"
-                  ]
-                },
-                "Layers": [
-                  {
-                    "Ref": "ServerlessSaaSLayers"
-                  }
-                ]
-              }
-            },
-            "UpdateTenantApiGatewayUrl": {
-              "Type": "Custom::UpdateTenantApiGatewayUrl",
-              "DependsOn": "UpdateTenantApiGatewayUrlFunction",
-              "Properties": {
-                "ServiceToken": {
-                  "Fn::GetAtt": [
-                    "UpdateTenantApiGatewayUrlFunction",
-                    "Arn"
-                  ]
-                },
-                "TenantDetailsTableName": "ServerlessSaaS-TenantDetails",
-                "SettingsTableName": "ServerlessSaaS-Settings",
-                "TenantId": {
-                  "Ref": "TenantIdParameter"
-                },
-                "TenantApiGatewayUrl": {
-                  "Fn::Sub": "https://${ApiGatewayTenantApi}.execute-api.${AWS::Region}.amazonaws.com/prod/"
-                }
-              }
-            }
-          },
-          "id": "OtherResources01"
-        }
-      },
-      "connections": {},
-      "metadata": {
-        "designer": {
-          "resourcePositions": {
-            "OtherResources01": {
-              "x": 609.134950728939,
-              "y": 83.28012057128986,
-              "z": 0
-            },
-            "ProductTable": {
-              "x": 370.5,
-              "y": 284.3999938964844,
-              "z": 0
-            },
-            "OrderTable": {
-              "x": 700.5,
-              "y": 224.39999389648438,
-              "z": 0
-            },
-            "CreateProductFunction": {
-              "x": 700.5,
-              "y": 284.3999938964844,
-              "z": 0
-            },
-            "UpdateProductFunction": {
-              "x": 700.5,
-              "y": 344.3999938964844,
-              "z": 0
-            },
-            "DeleteProductFunction": {
-              "x": 370.5,
-              "y": 344.3999938964844,
-              "z": 0
-            },
-            "CreateOrderFunction": {
-              "x": 40.5,
-              "y": 344.3999938964844,
-              "z": 0
-            },
-            "UpdateOrderFunction": {
-              "x": 40.5,
-              "y": 284.3999938964844,
-              "z": 0
-            },
-            "DeleteOrderFunction": {
-              "x": 40.5,
-              "y": 224.39999389648438,
-              "z": 0
-            },
-            "ApiGatewayTenantApi": {
-              "x": 370.5,
-              "y": 199.39999389648438,
-              "z": 0
-            }
-          }
-        }
-      },
-      "unsafe": true
-    }
-  ]
+	"id": "multi-tenant-saas-tenant",
+	"name": "multi-tenant-saas-tenant",
+	"type": "altostra",
+	"description": "An empty project template",
+	"created": "2023-06-11T15:40:58.491Z",
+	"blueprints": [
+		{
+			"id": "ImportedBlueprint_md0044o",
+			"name": "Imported blueprint",
+			"description": "Serverless SaaS Reference Architecture \n",
+			"version": "2019-10-24",
+			"resources": {
+				"ProductTable": {
+					"id": "ProductTable",
+					"name": "Product-pooled",
+					"tableName": "Product-pooled",
+					"key": {
+						"hash": {
+							"name": "shardId",
+							"type": "STRING"
+						},
+						"range": {
+							"name": "productId",
+							"type": "STRING"
+						}
+					},
+					"aws": {
+						"billingModel": "PROVISIONED",
+						"throughput": {
+							"readUnits": 5,
+							"writeUnits": 5
+						}
+					},
+					"type": "resource.table"
+				},
+				"OrderTable": {
+					"id": "OrderTable",
+					"name": "Order-pooled",
+					"tableName": "Order-pooled",
+					"key": {
+						"hash": {
+							"name": "shardId",
+							"type": "STRING"
+						},
+						"range": {
+							"name": "orderId",
+							"type": "STRING"
+						}
+					},
+					"aws": {
+						"billingModel": "PROVISIONED",
+						"throughput": {
+							"readUnits": 5,
+							"writeUnits": 5
+						}
+					},
+					"type": "resource.table"
+				},
+				"CreateProductFunction": {
+					"id": "CreateProductFunction",
+					"name": "CreateProductFunction",
+					"memory": 512,
+					"timeout": 29,
+					"tags": {
+						"TenantId": "pooled"
+					},
+					"packageType": "zip",
+					"runtime": "python3.9",
+					"entryPoint": "src/ProductService/product_service.create_product",
+					"policies": [
+						"arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy",
+						"arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+						"arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess"
+					],
+					"trace": true,
+					"environment": {
+						"variables": {
+							"IS_POOLED_DEPLOY": "true",
+							"POWERTOOLS_SERVICE_NAME": "ProductService"
+						}
+					},
+					"type": "resource.compute.function",
+					"endpointUrl": {
+						"enabled": false,
+						"authenticated": false
+					},
+					"layers": []
+				},
+				"UpdateProductFunction": {
+					"id": "UpdateProductFunction",
+					"name": "UpdateProductFunction",
+					"memory": 512,
+					"timeout": 29,
+					"tags": {
+						"TenantId": "pooled"
+					},
+					"packageType": "zip",
+					"runtime": "python3.9",
+					"entryPoint": "src/ProductService/product_service.update_product",
+					"policies": [
+						"arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy",
+						"arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+						"arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess"
+					],
+					"trace": true,
+					"environment": {
+						"variables": {
+							"IS_POOLED_DEPLOY": "true",
+							"POWERTOOLS_SERVICE_NAME": "ProductService"
+						}
+					},
+					"type": "resource.compute.function",
+					"endpointUrl": {
+						"enabled": false,
+						"authenticated": false
+					},
+					"layers": []
+				},
+				"DeleteProductFunction": {
+					"id": "DeleteProductFunction",
+					"name": "DeleteProductFunction",
+					"memory": 512,
+					"timeout": 29,
+					"tags": {
+						"TenantId": "pooled"
+					},
+					"packageType": "zip",
+					"runtime": "python3.9",
+					"entryPoint": "src/ProductService/product_service.delete_product",
+					"policies": [
+						"arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy",
+						"arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+						"arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess"
+					],
+					"trace": true,
+					"environment": {
+						"variables": {
+							"IS_POOLED_DEPLOY": "true",
+							"POWERTOOLS_SERVICE_NAME": "ProductService"
+						}
+					},
+					"type": "resource.compute.function",
+					"endpointUrl": {
+						"enabled": false,
+						"authenticated": false
+					},
+					"layers": []
+				},
+				"CreateOrderFunction": {
+					"id": "CreateOrderFunction",
+					"name": "CreateOrderFunction",
+					"memory": 512,
+					"timeout": 29,
+					"tags": {
+						"TenantId": "pooled"
+					},
+					"packageType": "zip",
+					"runtime": "python3.9",
+					"entryPoint": "src/OrderService/order_service.create_order",
+					"policies": [
+						"arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy",
+						"arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+						"arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess"
+					],
+					"trace": true,
+					"environment": {
+						"variables": {
+							"IS_POOLED_DEPLOY": "true",
+							"POWERTOOLS_SERVICE_NAME": "OrderService"
+						}
+					},
+					"type": "resource.compute.function",
+					"endpointUrl": {
+						"enabled": false,
+						"authenticated": false
+					},
+					"layers": []
+				},
+				"UpdateOrderFunction": {
+					"id": "UpdateOrderFunction",
+					"name": "UpdateOrderFunction",
+					"memory": 512,
+					"timeout": 29,
+					"tags": {
+						"TenantId": "pooled"
+					},
+					"packageType": "zip",
+					"runtime": "python3.9",
+					"entryPoint": "src/OrderService/order_service.update_order",
+					"policies": [
+						"arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy",
+						"arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+						"arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess"
+					],
+					"trace": true,
+					"environment": {
+						"variables": {
+							"IS_POOLED_DEPLOY": "true",
+							"POWERTOOLS_SERVICE_NAME": "OrderService"
+						}
+					},
+					"type": "resource.compute.function",
+					"endpointUrl": {
+						"enabled": false,
+						"authenticated": false
+					},
+					"layers": []
+				},
+				"DeleteOrderFunction": {
+					"id": "DeleteOrderFunction",
+					"name": "DeleteOrderFunction",
+					"memory": 512,
+					"timeout": 29,
+					"tags": {
+						"TenantId": "pooled"
+					},
+					"packageType": "zip",
+					"runtime": "python3.9",
+					"entryPoint": "src/OrderService/order_service.delete_order",
+					"policies": [
+						"arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy",
+						"arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+						"arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess"
+					],
+					"trace": true,
+					"environment": {
+						"variables": {
+							"IS_POOLED_DEPLOY": "true",
+							"POWERTOOLS_SERVICE_NAME": "OrderService"
+						}
+					},
+					"type": "resource.compute.function",
+					"endpointUrl": {
+						"enabled": false,
+						"authenticated": false
+					},
+					"layers": []
+				},
+				"ApiGatewayTenantApi": {
+					"id": "ApiGatewayTenantApi",
+					"name": "ApiGatewayTenantApi",
+					"endpoints": [
+						{
+							"type": "ref",
+							"id": "ApiEndpoint01"
+						},
+						{
+							"type": "ref",
+							"id": "ApiEndpoint02"
+						},
+						{
+							"type": "ref",
+							"id": "ApiEndpoint03"
+						},
+						{
+							"type": "ref",
+							"id": "ApiEndpoint04"
+						},
+						{
+							"type": "ref",
+							"id": "ApiEndpoint05"
+						},
+						{
+							"type": "ref",
+							"id": "ApiEndpoint06"
+						},
+						{
+							"type": "ref",
+							"id": "ApiEndpoint07"
+						},
+						{
+							"type": "ref",
+							"id": "ApiEndpoint08"
+						},
+						{
+							"type": "ref",
+							"id": "ApiEndpoint09"
+						},
+						{
+							"type": "ref",
+							"id": "ApiEndpoint10"
+						}
+					],
+					"cors": {
+						"type": "api.cors.simple",
+						"origins": "*"
+					},
+					"type": "resource.api"
+				},
+				"OtherResources01": {
+					"type": "resource.cloud-formation.custom-resources",
+					"name": "CustomResources",
+					"resources": {
+						"AssociateUsagePlanWithTenantAPI": {
+							"Type": "Custom::AssociateUsagePlanWithTenantAPI",
+							"DependsOn": "UpdateUsagePlanFunction",
+							"Properties": {
+								"ServiceToken": {
+									"Fn::GetAtt": [
+										"UpdateUsagePlanFunction01",
+										"Arn"
+									]
+								},
+								"ApiGatewayId": {
+									"Ref": "ApiGatewayTenantApi"
+								},
+								"SettingsTableName": "ServerlessSaaS-Settings",
+								"IsPooledDeploy": true,
+								"Stage": {
+									"Ref": "Prod"
+								},
+								"UsagePlanBasicTier": {
+									"Fn::ImportValue": "Serverless-SaaS-UsagePlanBasicTier"
+								},
+								"UsagePlanStandardTier": {
+									"Fn::ImportValue": "Serverless-SaaS-UsagePlanStandardTier"
+								},
+								"UsagePlanPremiumTier": {
+									"Fn::ImportValue": "Serverless-SaaS-UsagePlanPremiumTier"
+								},
+								"UsagePlanPlatinumTier": {
+									"Fn::ImportValue": "Serverless-SaaS-UsagePlanPlatinumTier"
+								}
+							}
+						},
+						"UpdateTenantApiGatewayUrl": {
+							"Type": "Custom::UpdateTenantApiGatewayUrl",
+							"DependsOn": "UpdateTenantApiGatewayUrlFunction",
+							"Properties": {
+								"ServiceToken": {
+									"Fn::GetAtt": [
+										"UpdateTenantApiGatewayUrlFunction01",
+										"Arn"
+									]
+								},
+								"TenantDetailsTableName": "ServerlessSaaS-TenantDetails",
+								"SettingsTableName": "ServerlessSaaS-Settings",
+								"TenantId": {
+									"Ref": "TenantIdParameter"
+								},
+								"TenantApiGatewayUrl": {
+									"Fn::Sub": "https://${ApiGatewayTenantApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+								}
+							}
+						}
+					},
+					"id": "OtherResources01"
+				},
+				"GetProductFunction01": {
+					"type": "resource.compute.function",
+					"name": "GetProductFunction",
+					"memory": 512,
+					"timeout": 29,
+					"entryPoint": "src/ProductService/product_service.get_product",
+					"runtime": "python3.9",
+					"endpointUrl": {
+						"enabled": false,
+						"authenticated": false
+					},
+					"packageType": "zip",
+					"layers": [],
+					"policies": [
+						"arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy",
+						"arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+						"arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess"
+					],
+					"environment": {
+						"variables": {
+							"IS_POOLED_DEPLOY": "true",
+							"POWERTOOLS_SERVICE_NAME": "ProductService"
+						}
+					},
+					"id": "GetProductFunction01"
+				},
+				"AssumeRolePolicy01": {
+					"type": "resource.access.policy",
+					"name": "AssumeRolePolicy",
+					"policyDocument": {
+						"Version": "2012-10-17",
+						"Statement": [
+							{
+								"Effect": "Allow",
+								"Principal": {
+									"Service": [
+										"lambda.amazonaws.com"
+									]
+								},
+								"Action": [
+									"sts:AssumeRole"
+								]
+							}
+						]
+					},
+					"id": "AssumeRolePolicy01"
+				},
+				"GetProductsFunction01": {
+					"type": "resource.compute.function",
+					"name": "GetProductsFunction",
+					"memory": 512,
+					"timeout": 29,
+					"entryPoint": "src/ProductService/product_service.get_products",
+					"runtime": "python3.9",
+					"endpointUrl": {
+						"enabled": false,
+						"authenticated": false
+					},
+					"packageType": "zip",
+					"layers": [],
+					"policies": [
+						"arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy",
+						"arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+						"arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess"
+					],
+					"environment": {
+						"variables": {
+							"IS_POOLED_DEPLOY": "true",
+							"POWERTOOLS_SERVICE_NAME": "ProductService"
+						}
+					},
+					"id": "GetProductsFunction01"
+				},
+				"GetOrdersFunction01": {
+					"type": "resource.compute.function",
+					"name": "GetOrdersFunction",
+					"memory": 512,
+					"timeout": 29,
+					"entryPoint": "src/OrderService/order_service.get_orders",
+					"runtime": "python3.9",
+					"endpointUrl": {
+						"enabled": false,
+						"authenticated": false
+					},
+					"packageType": "zip",
+					"layers": [],
+					"policies": [
+						"arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy",
+						"arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+						"arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess"
+					],
+					"environment": {
+						"variables": {
+							"IS_POOLED_DEPLOY": "true",
+							"POWERTOOLS_SERVICE_NAME": "OrderService"
+						}
+					},
+					"id": "GetOrdersFunction01"
+				},
+				"GetOrderFunction01": {
+					"type": "resource.compute.function",
+					"name": "GetOrderFunction",
+					"memory": 512,
+					"timeout": 29,
+					"entryPoint": "src/OrderService/order_service.get_order",
+					"runtime": "python3.9",
+					"endpointUrl": {
+						"enabled": false,
+						"authenticated": false
+					},
+					"packageType": "zip",
+					"layers": [],
+					"policies": [
+						"arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy",
+						"arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+						"arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess"
+					],
+					"environment": {
+						"variables": {
+							"IS_POOLED_DEPLOY": "true",
+							"POWERTOOLS_SERVICE_NAME": "OrderService"
+						}
+					},
+					"id": "GetOrderFunction01"
+				},
+				"ApiEndpoint01": {
+					"type": "resource.api.endpoint",
+					"name": "api-endpoint",
+					"method": "GET",
+					"path": "/order/{id}",
+					"api": {
+						"type": "ref",
+						"id": "ApiGatewayTenantApi"
+					},
+					"id": "ApiEndpoint01"
+				},
+				"ApiEndpoint02": {
+					"type": "resource.api.endpoint",
+					"name": "api-endpoint",
+					"method": "PUT",
+					"path": "/order/{id}",
+					"api": {
+						"type": "ref",
+						"id": "ApiGatewayTenantApi"
+					},
+					"id": "ApiEndpoint02"
+				},
+				"ApiEndpoint03": {
+					"type": "resource.api.endpoint",
+					"name": "api-endpoint",
+					"method": "DELETE",
+					"path": "/order/{id}",
+					"api": {
+						"type": "ref",
+						"id": "ApiGatewayTenantApi"
+					},
+					"id": "ApiEndpoint03"
+				},
+				"ApiEndpoint04": {
+					"type": "resource.api.endpoint",
+					"name": "api-endpoint",
+					"method": "GET",
+					"path": "/orders",
+					"api": {
+						"type": "ref",
+						"id": "ApiGatewayTenantApi"
+					},
+					"id": "ApiEndpoint04"
+				},
+				"ApiEndpoint05": {
+					"type": "resource.api.endpoint",
+					"name": "api-endpoint",
+					"method": "POST",
+					"path": "/order",
+					"api": {
+						"type": "ref",
+						"id": "ApiGatewayTenantApi"
+					},
+					"id": "ApiEndpoint05"
+				},
+				"ApiEndpoint06": {
+					"type": "resource.api.endpoint",
+					"name": "api-endpoint",
+					"method": "GET",
+					"path": "/product/{id}",
+					"api": {
+						"type": "ref",
+						"id": "ApiGatewayTenantApi"
+					},
+					"id": "ApiEndpoint06"
+				},
+				"ApiEndpoint07": {
+					"type": "resource.api.endpoint",
+					"name": "api-endpoint",
+					"method": "PUT",
+					"path": "/product/{id}",
+					"api": {
+						"type": "ref",
+						"id": "ApiGatewayTenantApi"
+					},
+					"id": "ApiEndpoint07"
+				},
+				"ApiEndpoint08": {
+					"type": "resource.api.endpoint",
+					"name": "api-endpoint",
+					"method": "GET",
+					"path": "/products",
+					"api": {
+						"type": "ref",
+						"id": "ApiGatewayTenantApi"
+					},
+					"id": "ApiEndpoint08"
+				},
+				"ApiEndpoint09": {
+					"type": "resource.api.endpoint",
+					"name": "api-endpoint",
+					"method": "DELETE",
+					"path": "/product/{id}",
+					"api": {
+						"type": "ref",
+						"id": "ApiGatewayTenantApi"
+					},
+					"id": "ApiEndpoint09"
+				},
+				"ApiEndpoint10": {
+					"type": "resource.api.endpoint",
+					"name": "api-endpoint",
+					"method": "POST",
+					"path": "/product",
+					"api": {
+						"type": "ref",
+						"id": "ApiGatewayTenantApi"
+					},
+					"id": "ApiEndpoint10"
+				},
+				"TenantSettingsTable01": {
+					"type": "resource.external",
+					"name": "TenantSettingsTable",
+					"externalResourceType": "resource.table",
+					"identifierType": "table-arn",
+					"identifier": "TableName",
+					"id": "TenantSettingsTable01"
+				},
+				"UpdateUsagePlanFunction01": {
+					"type": "resource.compute.function",
+					"name": "UpdateUsagePlanFunction",
+					"memory": 512,
+					"timeout": 29,
+					"entryPoint": "src/custom_resources/update_usage_plan.handler",
+					"runtime": "python3.9",
+					"endpointUrl": {
+						"enabled": false,
+						"authenticated": false
+					},
+					"packageType": "zip",
+					"layers": [],
+					"policies": [
+						"arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy",
+						{
+							"Version": "2012-10-17",
+							"Statement": [
+								{
+									"Effect": "Allow",
+									"Action": [
+										"kms:Decrypt"
+									],
+									"Resource": {
+										"Fn::Sub": "arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/*"
+									}
+								},
+								{
+									"Effect": "Allow",
+									"Action": [
+										"logs:CreateLogGroup",
+										"logs:PutLogEvents",
+										"logs:CreateLogStream"
+									],
+									"Resource": {
+										"Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:*"
+									}
+								},
+								{
+									"Effect": "Allow",
+									"Action": [
+										"logs:DescribeLogStreams"
+									],
+									"Resource": {
+										"Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:*"
+									}
+								},
+								{
+									"Effect": "Allow",
+									"Action": [
+										"xray:PutTraceSegments",
+										"xray:PutTelemetryRecords"
+									],
+									"Resource": "*"
+								},
+								{
+									"Effect": "Allow",
+									"Action": [
+										"apigateway:PATCH"
+									],
+									"Resource": {
+										"Fn::Sub": "arn:aws:apigateway:${AWS::Region}::/usageplans/*"
+									}
+								}
+							]
+						}
+					],
+					"environment": {
+						"variables": {}
+					},
+					"id": "UpdateUsagePlanFunction01"
+				},
+				"TenantDetailsTable01": {
+					"type": "resource.external",
+					"name": "TenantDetailsTable",
+					"externalResourceType": "resource.table",
+					"identifierType": "table-arn",
+					"identifier": "TableName",
+					"id": "TenantDetailsTable01"
+				},
+				"UpdateTenantApiGatewayUrlFunction01": {
+					"type": "resource.compute.function",
+					"name": "UpdateTenantApiGatewayUrlFunction",
+					"memory": 512,
+					"timeout": 29,
+					"entryPoint": "src/custom_resources/update_tenant_apigatewayurl.handler",
+					"runtime": "python3.9",
+					"endpointUrl": {
+						"enabled": false,
+						"authenticated": false
+					},
+					"packageType": "zip",
+					"layers": [],
+					"policies": [
+						"arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy",
+						"arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+						"arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess"
+					],
+					"environment": {
+						"variables": {}
+					},
+					"id": "UpdateTenantApiGatewayUrlFunction01"
+				}
+			},
+			"connections": {
+				"AssumeRolePolicy01": {
+					"GetProductFunction01": {
+						"type": "connection.access.policy-attachment",
+						"from": "AssumeRolePolicy01",
+						"to": "GetProductFunction01"
+					},
+					"GetProductsFunction01": {
+						"type": "connection.access.policy-attachment",
+						"from": "AssumeRolePolicy01",
+						"to": "GetProductsFunction01"
+					},
+					"CreateProductFunction": {
+						"type": "connection.access.policy-attachment",
+						"from": "AssumeRolePolicy01",
+						"to": "CreateProductFunction"
+					},
+					"UpdateProductFunction": {
+						"type": "connection.access.policy-attachment",
+						"from": "AssumeRolePolicy01",
+						"to": "UpdateProductFunction"
+					},
+					"DeleteProductFunction": {
+						"type": "connection.access.policy-attachment",
+						"from": "AssumeRolePolicy01",
+						"to": "DeleteProductFunction"
+					},
+					"GetOrdersFunction01": {
+						"type": "connection.access.policy-attachment",
+						"from": "AssumeRolePolicy01",
+						"to": "GetOrdersFunction01"
+					},
+					"GetOrderFunction01": {
+						"type": "connection.access.policy-attachment",
+						"from": "AssumeRolePolicy01",
+						"to": "GetOrderFunction01"
+					},
+					"CreateOrderFunction": {
+						"type": "connection.access.policy-attachment",
+						"from": "AssumeRolePolicy01",
+						"to": "CreateOrderFunction"
+					},
+					"UpdateOrderFunction": {
+						"type": "connection.access.policy-attachment",
+						"from": "AssumeRolePolicy01",
+						"to": "UpdateOrderFunction"
+					},
+					"DeleteOrderFunction": {
+						"type": "connection.access.policy-attachment",
+						"from": "AssumeRolePolicy01",
+						"to": "DeleteOrderFunction"
+					},
+					"UpdateUsagePlanFunction01": {
+						"type": "connection.access.policy-attachment",
+						"from": "AssumeRolePolicy01",
+						"to": "UpdateUsagePlanFunction01"
+					},
+					"UpdateTenantApiGatewayUrlFunction01": {
+						"type": "connection.access.policy-attachment",
+						"from": "AssumeRolePolicy01",
+						"to": "UpdateTenantApiGatewayUrlFunction01"
+					}
+				},
+				"GetProductFunction01": {
+					"ProductTable": {
+						"type": "connection.resource-access",
+						"accessLevel": "read-only",
+						"from": "GetProductFunction01",
+						"to": "ProductTable"
+					}
+				},
+				"GetProductsFunction01": {
+					"ProductTable": {
+						"type": "connection.resource-access",
+						"accessLevel": "read-only",
+						"from": "GetProductsFunction01",
+						"to": "ProductTable"
+					}
+				},
+				"CreateProductFunction": {
+					"ProductTable": {
+						"type": "connection.resource-access",
+						"accessLevel": "read-write",
+						"from": "CreateProductFunction",
+						"to": "ProductTable"
+					}
+				},
+				"UpdateProductFunction": {
+					"ProductTable": {
+						"type": "connection.resource-access",
+						"accessLevel": "read-write",
+						"from": "UpdateProductFunction",
+						"to": "ProductTable"
+					}
+				},
+				"DeleteProductFunction": {
+					"ProductTable": {
+						"type": "connection.resource-access",
+						"accessLevel": "read-write",
+						"from": "DeleteProductFunction",
+						"to": "ProductTable"
+					}
+				},
+				"GetOrdersFunction01": {
+					"OrderTable": {
+						"type": "connection.resource-access",
+						"accessLevel": "read-only",
+						"from": "GetOrdersFunction01",
+						"to": "OrderTable"
+					}
+				},
+				"GetOrderFunction01": {
+					"OrderTable": {
+						"type": "connection.resource-access",
+						"accessLevel": "read-only",
+						"from": "GetOrderFunction01",
+						"to": "OrderTable"
+					}
+				},
+				"CreateOrderFunction": {
+					"OrderTable": {
+						"type": "connection.resource-access",
+						"accessLevel": "read-write",
+						"from": "CreateOrderFunction",
+						"to": "OrderTable"
+					}
+				},
+				"UpdateOrderFunction": {
+					"OrderTable": {
+						"type": "connection.resource-access",
+						"accessLevel": "read-write",
+						"from": "UpdateOrderFunction",
+						"to": "OrderTable"
+					}
+				},
+				"DeleteOrderFunction": {
+					"OrderTable": {
+						"type": "connection.resource-access",
+						"accessLevel": "read-write",
+						"from": "DeleteOrderFunction",
+						"to": "OrderTable"
+					}
+				},
+				"ApiEndpoint01": {
+					"GetOrderFunction01": {
+						"type": "connection.trigger",
+						"from": "ApiEndpoint01",
+						"to": "GetOrderFunction01"
+					}
+				},
+				"ApiEndpoint02": {
+					"UpdateOrderFunction": {
+						"type": "connection.trigger",
+						"from": "ApiEndpoint02",
+						"to": "UpdateOrderFunction"
+					}
+				},
+				"ApiEndpoint03": {
+					"DeleteOrderFunction": {
+						"type": "connection.trigger",
+						"from": "ApiEndpoint03",
+						"to": "DeleteOrderFunction"
+					}
+				},
+				"ApiEndpoint04": {
+					"GetOrdersFunction01": {
+						"type": "connection.trigger",
+						"from": "ApiEndpoint04",
+						"to": "GetOrdersFunction01"
+					}
+				},
+				"ApiEndpoint05": {
+					"CreateOrderFunction": {
+						"type": "connection.trigger",
+						"from": "ApiEndpoint05",
+						"to": "CreateOrderFunction"
+					}
+				},
+				"ApiEndpoint06": {
+					"GetProductFunction01": {
+						"type": "connection.trigger",
+						"from": "ApiEndpoint06",
+						"to": "GetProductFunction01"
+					}
+				},
+				"ApiEndpoint07": {
+					"UpdateProductFunction": {
+						"type": "connection.trigger",
+						"from": "ApiEndpoint07",
+						"to": "UpdateProductFunction"
+					}
+				},
+				"ApiEndpoint09": {
+					"DeleteProductFunction": {
+						"type": "connection.trigger",
+						"from": "ApiEndpoint09",
+						"to": "DeleteProductFunction"
+					}
+				},
+				"ApiEndpoint08": {
+					"GetProductsFunction01": {
+						"type": "connection.trigger",
+						"from": "ApiEndpoint08",
+						"to": "GetProductsFunction01"
+					}
+				},
+				"ApiEndpoint10": {
+					"CreateProductFunction": {
+						"type": "connection.trigger",
+						"from": "ApiEndpoint10",
+						"to": "CreateProductFunction"
+					}
+				},
+				"UpdateUsagePlanFunction01": {
+					"TenantSettingsTable01": {
+						"type": "connection.resource-access",
+						"accessLevel": "read-only",
+						"from": "UpdateUsagePlanFunction01",
+						"to": "TenantSettingsTable01"
+					}
+				},
+				"UpdateTenantApiGatewayUrlFunction01": {
+					"TenantDetailsTable01": {
+						"type": "connection.resource-access",
+						"accessLevel": "write-only",
+						"from": "UpdateTenantApiGatewayUrlFunction01",
+						"to": "TenantDetailsTable01"
+					},
+					"TenantSettingsTable01": {
+						"type": "connection.resource-access",
+						"accessLevel": "write-only",
+						"from": "UpdateTenantApiGatewayUrlFunction01",
+						"to": "TenantSettingsTable01"
+					}
+				}
+			},
+			"metadata": {
+				"designer": {
+					"resourcePositions": {
+						"OtherResources01": {
+							"x": 0,
+							"y": 50,
+							"z": 0
+						},
+						"ProductTable": {
+							"x": -290,
+							"y": 270,
+							"z": 0
+						},
+						"OrderTable": {
+							"x": 1030,
+							"y": 270,
+							"z": 0
+						},
+						"CreateProductFunction": {
+							"x": 0,
+							"y": 170,
+							"z": 0
+						},
+						"UpdateProductFunction": {
+							"x": 0,
+							"y": 270,
+							"z": 0
+						},
+						"DeleteProductFunction": {
+							"x": 0,
+							"y": 320,
+							"z": 0
+						},
+						"CreateOrderFunction": {
+							"x": 720,
+							"y": 170,
+							"z": 0
+						},
+						"UpdateOrderFunction": {
+							"x": 720,
+							"y": 270,
+							"z": 0
+						},
+						"DeleteOrderFunction": {
+							"x": 720,
+							"y": 320,
+							"z": 0
+						},
+						"ApiGatewayTenantApi": {
+							"x": 365.5,
+							"y": 134.39999389648438,
+							"z": 0
+						},
+						"GetProductFunction01": {
+							"x": 0,
+							"y": 220,
+							"z": 0
+						},
+						"AssumeRolePolicy01": {
+							"x": 736.3923645019531,
+							"y": -1.6923065185546875,
+							"z": 0
+						},
+						"GetProductsFunction01": {
+							"x": 0,
+							"y": 370,
+							"z": 0
+						},
+						"GetOrdersFunction01": {
+							"x": 720,
+							"y": 370,
+							"z": 0
+						},
+						"GetOrderFunction01": {
+							"x": 720,
+							"y": 220,
+							"z": 0
+						},
+						"TenantSettingsTable01": {
+							"x": 0,
+							"y": -50,
+							"z": 0
+						},
+						"UpdateUsagePlanFunction01": {
+							"x": 330,
+							"y": -50,
+							"z": 0
+						},
+						"TenantDetailsTable01": {
+							"x": 0,
+							"y": 0,
+							"z": 0
+						},
+						"UpdateTenantApiGatewayUrlFunction01": {
+							"x": 330,
+							"y": 0,
+							"z": 0
+						}
+					}
+				}
+			},
+			"unsafe": true,
+			"globalEnvironmentVariables": {
+				"POWERTOOLS_METRICS_NAMESPACE": "ServerlessSaaS",
+				"LOG_LEVEL": "DEBUG"
+			},
+			"parameters": {
+				"TENANT_SETTINGS_TABLE": {
+					"paths": [
+						"resources/TenantSettingsTable01/identifier"
+					]
+				},
+				"TENANT_DETAILS_TABLE": {
+					"paths": [
+						"resources/TenantDetailsTable01/identifier"
+					]
+				}
+			}
+		}
+	]
 }
