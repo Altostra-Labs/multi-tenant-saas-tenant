@@ -294,7 +294,6 @@
 					"resources": {
 						"AssociateUsagePlanWithTenantAPI": {
 							"Type": "Custom::AssociateUsagePlanWithTenantAPI",
-							"DependsOn": "UpdateUsagePlanFunction",
 							"Properties": {
 								"ServiceToken": {
 									"Fn::GetAtt": [
@@ -311,7 +310,6 @@
 						},
 						"UpdateTenantApiGatewayUrl": {
 							"Type": "Custom::UpdateTenantApiGatewayUrl",
-							"DependsOn": "UpdateTenantApiGatewayUrlFunction",
 							"Properties": {
 								"ServiceToken": {
 									"Fn::GetAtt": [
