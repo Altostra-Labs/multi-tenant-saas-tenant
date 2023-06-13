@@ -4,6 +4,7 @@
 import json
 import boto3
 import logger
+import os
 
 from crhelper import CfnResource
 helper = CfnResource()
@@ -25,49 +26,50 @@ def do_action(event, _):
     """
     logger.info("adding api gateway stage to usage plan")
     api_id = event['ResourceProperties']['ApiGatewayId']
-    settings_table_name = event['ResourceProperties']['SettingsTableName']
+    settings_table_name = os.environ.get('EXTERN_TENANTSETTINGSTABLE01')
     is_pooled_deploy = event['ResourceProperties']['IsPooledDeploy']
     stage = event['ResourceProperties']['Stage']
-    usage_plan_id_basic = event['ResourceProperties']['UsagePlanBasicTier']
-    usage_plan_id_standard = event['ResourceProperties']['UsagePlanStandardTier']
-    usage_plan_id_premium = event['ResourceProperties']['UsagePlanPremiumTier']
-    usage_plan_id_platinum = event['ResourceProperties']['UsagePlanPlatinumTier']
+    usage_plan_id_basic = os.environ.get('UsagePlanBasicTier')
+    usage_plan_id_standard = os.environ.get('UsagePlanStandardTier')
+    usage_plan_id_premium = os.environ.get('UsagePlanPremiumTier')
+    usage_plan_id_platinum = os.environ.get('UsagePlanPlatinumTier')
 
     table_system_settings = dynamodb.Table(settings_table_name)
 
     if(is_pooled_deploy == "true"):
-        response_apigateway = apigateway.update_usage_plan (
-                usagePlanId=usage_plan_id_basic,
-                patchOperations=[
-                    {
-                        'op':'add',
-                        'path':'/apiStages',
-                        'value': api_id + ":" + stage
-                    }
-                ]
-        )
+        pass
+        # response_apigateway = apigateway.update_usage_plan (
+        #         usagePlanId=usage_plan_id_basic,
+        #         patchOperations=[
+        #             {
+        #                 'op':'add',
+        #                 'path':'/apiStages',
+        #                 'value': api_id + ":" + stage
+        #             }
+        #         ]
+        # )
 
-        response_apigateway = apigateway.update_usage_plan (
-                usagePlanId=usage_plan_id_standard,
-                patchOperations=[
-                    {
-                        'op':'add',
-                        'path':'/apiStages',
-                        'value': api_id + ":" + stage
-                    }
-                ]
-        )
+        # response_apigateway = apigateway.update_usage_plan (
+        #         usagePlanId=usage_plan_id_standard,
+        #         patchOperations=[
+        #             {
+        #                 'op':'add',
+        #                 'path':'/apiStages',
+        #                 'value': api_id + ":" + stage
+        #             }
+        #         ]
+        # )
         
-        response_apigateway = apigateway.update_usage_plan (
-                usagePlanId=usage_plan_id_premium,
-                patchOperations=[
-                    {
-                        'op':'add',
-                        'path':'/apiStages',
-                        'value': api_id + ":" + stage
-                    }
-                ]
-        )
+        # response_apigateway = apigateway.update_usage_plan (
+        #         usagePlanId=usage_plan_id_premium,
+        #         patchOperations=[
+        #             {
+        #                 'op':'add',
+        #                 'path':'/apiStages',
+        #                 'value': api_id + ":" + stage
+        #             }
+        #         ]
+        # )
         
     else:
         

@@ -305,23 +305,8 @@
 								"ApiGatewayId": {
 									"Ref": "ApiGatewayTenantApi"
 								},
-								"SettingsTableName": "ServerlessSaaS-Settings",
 								"IsPooledDeploy": true,
-								"Stage": {
-									"Ref": "Prod"
-								},
-								"UsagePlanBasicTier": {
-									"Fn::ImportValue": "Serverless-SaaS-UsagePlanBasicTier"
-								},
-								"UsagePlanStandardTier": {
-									"Fn::ImportValue": "Serverless-SaaS-UsagePlanStandardTier"
-								},
-								"UsagePlanPremiumTier": {
-									"Fn::ImportValue": "Serverless-SaaS-UsagePlanPremiumTier"
-								},
-								"UsagePlanPlatinumTier": {
-									"Fn::ImportValue": "Serverless-SaaS-UsagePlanPlatinumTier"
-								}
+								"Stage": "Prod"
 							}
 						},
 						"UpdateTenantApiGatewayUrl": {
@@ -334,11 +319,7 @@
 										"Arn"
 									]
 								},
-								"TenantDetailsTableName": "ServerlessSaaS-TenantDetails",
-								"SettingsTableName": "ServerlessSaaS-Settings",
-								"TenantId": {
-									"Ref": "TenantIdParameter"
-								},
+								"TenantId": "pooled",
 								"TenantApiGatewayUrl": {
 									"Fn::Sub": "https://${ApiGatewayTenantApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
 								}
@@ -652,7 +633,12 @@
 						}
 					],
 					"environment": {
-						"variables": {}
+						"variables": {
+							"UsagePlanPremiumTier": "",
+							"UsagePlanPlatinumTier": "",
+							"UsagePlanStandardTier": "",
+							"UsagePlanBasicTier": ""
+						}
 					},
 					"id": "UpdateUsagePlanFunction01"
 				},
@@ -1077,6 +1063,7 @@
 			},
 			"unsafe": true,
 			"globalEnvironmentVariables": {
+				"PYTHONPATH": "/var/task/src:/var/task/src/vendor",
 				"POWERTOOLS_METRICS_NAMESPACE": "ServerlessSaaS",
 				"LOG_LEVEL": "DEBUG"
 			},
@@ -1104,6 +1091,26 @@
 				"CognitoOperationUsersUserPoolId": {
 					"paths": [
 						"resources/BusinessServicesAuthorizerFunction01/environment/variables/OPERATION_USERS_USER_POOL"
+					]
+				},
+				"ApiKeyBasicTierParameter": {
+					"paths": [
+						"resources/UpdateUsagePlanFunction01/environment/variables/UsagePlanBasicTier"
+					]
+				},
+				"ApiKeyStandardTierParameter": {
+					"paths": [
+						"resources/UpdateUsagePlanFunction01/environment/variables/UsagePlanStandardTier"
+					]
+				},
+				"ApiKeyPremiumTierParameter": {
+					"paths": [
+						"resources/UpdateUsagePlanFunction01/environment/variables/UsagePlanPremiumTier"
+					]
+				},
+				"ApiKeyPlatinumTierParameter": {
+					"paths": [
+						"resources/UpdateUsagePlanFunction01/environment/variables/UsagePlanPlatinumTier"
 					]
 				}
 			}

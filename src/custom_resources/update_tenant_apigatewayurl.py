@@ -3,6 +3,7 @@ import boto3
 import logger
 from boto3.dynamodb.conditions import Key
 from crhelper import CfnResource
+import os
 helper = CfnResource()
 
 try:
@@ -25,8 +26,8 @@ def do_action(event, _):
     """
     logger.info("Updating Tenant Details table")
 
-    tenant_details_table_name = event['ResourceProperties']['TenantDetailsTableName']
-    settings_table_name = event['ResourceProperties']['SettingsTableName']
+    tenant_details_table_name = os.environ.get('EXTERN_TENANTDETAILSTABLE01')
+    settings_table_name = os.environ.get('EXTERN_TENANTSETTINGSTABLE01')
     tenant_id = event['ResourceProperties']['TenantId']
     tenant_api_gateway_url = event['ResourceProperties']['TenantApiGatewayUrl']
 
