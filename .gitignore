@@ -1,6 +1,7 @@
 # Byte-compiled / optimized / DLL files
 *$py.class
 
+src/vendor
 # C extensions
 *.so
 
