@@ -941,16 +941,6 @@
 						"from": "BusinessServicesAuthorizerFunction01",
 						"to": "TenantDetailsTable01"
 					}
-				},
-				"ApiGatewayTenantApi": {
-					"BusinessServicesAuthorizerFunction01": {
-						"type": "connection.api.authorizer",
-						"from": "ApiGatewayTenantApi",
-						"to": "BusinessServicesAuthorizerFunction01",
-						"cacheBehavior": {
-							"cacheTimeout": 60
-						}
-					}
 				}
 			},
 			"metadata": {
