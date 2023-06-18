@@ -16,7 +16,7 @@ import utils
 region = os.environ['AWS_REGION']
 sts_client = boto3.client("sts", region_name=region)
 dynamodb = boto3.resource('dynamodb')
-table_tenant_details = dynamodb.Table('ServerlessSaaS-TenantDetails')
+table_tenant_details = dynamodb.Table(os.environ['EXTERN_TENANTDETAILSTABLE01'])
 user_pool_operation_user = os.environ['OPERATION_USERS_USER_POOL']
 app_client_operation_user = os.environ['OPERATION_USERS_APP_CLIENT']
 api_key_operation_user = os.environ['OPERATION_USERS_API_KEY']
@@ -24,7 +24,7 @@ api_key_operation_user = os.environ['OPERATION_USERS_API_KEY']
 def lambda_handler(event, context):
     
     #get JWT token after Bearer from authorization
-    token = event['authorizationToken'].split(" ")
+    token = event['headers']['Authorization'].split(" ")    
     if (token[0] != 'Bearer'):
         raise Exception('Authorization header should have a format Bearer <JWT> Token')
     jwt_bearer_token = token[1]
@@ -73,17 +73,17 @@ def lambda_handler(event, context):
         user_role = response["custom:userRole"]
     
     
-    tmp = event['methodArn'].split(':')
-    api_gateway_arn_tmp = tmp[5].split('/')
-    aws_account_id = tmp[4]    
+    arn_parts = event['methodArn'].split(':')
+    api_gateway_arn_tmp = arn_parts[5].split('/')
+    aws_account_id = arn_parts[4]    
     
     policy = AuthPolicy(principal_id, aws_account_id)
     policy.restApiId = api_gateway_arn_tmp[0]
-    policy.region = tmp[3]
+    policy.region = arn_parts[3]
     policy.stage = api_gateway_arn_tmp[1]
 
-    if (auth_manager.isSaaSProvider(user_role) == False):
-        if (isTenantAuthorizedForThisAPI(apigateway_url, api_gateway_arn_tmp[0]) == False):
+    if (not auth_manager.isSaaSProvider(user_role)):
+        if (not isTenantAuthorizedForThisAPI(apigateway_url, api_gateway_arn_tmp[0])):
             logger.error('Unauthorized')
             raise Exception('Unauthorized')
 
@@ -104,18 +104,8 @@ def lambda_handler(event, context):
     
     role_arn = "arn:aws:iam::{}:role/authorizer-access-role".format(aws_account_id)
     
-    assumed_role = sts_client.assume_role(
-        RoleArn=role_arn,
-        RoleSessionName="tenant-aware-session",
-        Policy=iam_policy,
-    )
-    credentials = assumed_role["Credentials"]
-
     #pass sts credentials to lambda
     context = {
-        'accesskey': credentials['AccessKeyId'], # $context.authorizer.key -> value
-        'secretkey' : credentials['SecretAccessKey'],
-        'sessiontoken' : credentials["SessionToken"],
         'userName': user_name,
         'tenantId': tenant_id,
         'userPoolId': userpool_id,
