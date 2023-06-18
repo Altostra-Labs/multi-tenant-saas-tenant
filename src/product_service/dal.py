@@ -11,7 +11,7 @@ import logger
 import random
 import threading
 
-from product_models import Product
+from product_service.models import Product
 from types import SimpleNamespace
 from boto3.dynamodb.conditions import Key
 

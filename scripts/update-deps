@@ -8,7 +8,7 @@ function install-dir () {
 
 
 install-dir ./src
-install-dir ./src/custom_resources
+install-dir ./functions/custom_resources
 install-dir ./src/OrderService
 install-dir ./src/ProductService
-install-dir ./src/Resources
+install-dir ./functions/Resources

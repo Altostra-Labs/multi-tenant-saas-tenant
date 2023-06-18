@@ -59,7 +59,7 @@
 					},
 					"packageType": "zip",
 					"runtime": "python3.9",
-					"entryPoint": "src/ProductService/product_service.create_product",
+					"entryPoint": "functions/ProductService/product_service.create_product",
 					"policies": [
 						"arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy",
 						"arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
@@ -89,7 +89,7 @@
 					},
 					"packageType": "zip",
 					"runtime": "python3.9",
-					"entryPoint": "src/ProductService/product_service.update_product",
+					"entryPoint": "functions/ProductService/product_service.update_product",
 					"policies": [
 						"arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy",
 						"arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
@@ -119,7 +119,7 @@
 					},
 					"packageType": "zip",
 					"runtime": "python3.9",
-					"entryPoint": "src/ProductService/product_service.delete_product",
+					"entryPoint": "functions/ProductService/product_service.delete_product",
 					"policies": [
 						"arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy",
 						"arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
@@ -149,7 +149,7 @@
 					},
 					"packageType": "zip",
 					"runtime": "python3.9",
-					"entryPoint": "src/OrderService/order_service.create_order",
+					"entryPoint": "functions/OrderService/order_service.create_order",
 					"policies": [
 						"arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy",
 						"arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
@@ -179,7 +179,7 @@
 					},
 					"packageType": "zip",
 					"runtime": "python3.9",
-					"entryPoint": "src/OrderService/order_service.update_order",
+					"entryPoint": "functions/OrderService/order_service.update_order",
 					"policies": [
 						"arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy",
 						"arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
@@ -209,7 +209,7 @@
 					},
 					"packageType": "zip",
 					"runtime": "python3.9",
-					"entryPoint": "src/OrderService/order_service.delete_order",
+					"entryPoint": "functions/OrderService/order_service.delete_order",
 					"policies": [
 						"arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy",
 						"arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
@@ -326,7 +326,7 @@
 					"name": "GetProductFunction",
 					"memory": 512,
 					"timeout": 29,
-					"entryPoint": "src/ProductService/product_service.get_product",
+					"entryPoint": "functions/ProductService/product_service.get_product",
 					"runtime": "python3.9",
 					"endpointUrl": {
 						"enabled": false,
@@ -367,7 +367,7 @@
 					"name": "GetProductsFunction",
 					"memory": 512,
 					"timeout": 29,
-					"entryPoint": "src/ProductService/product_service.get_products",
+					"entryPoint": "functions/ProductService/product_service.get_products",
 					"runtime": "python3.9",
 					"endpointUrl": {
 						"enabled": false,
@@ -393,7 +393,7 @@
 					"name": "GetOrdersFunction",
 					"memory": 512,
 					"timeout": 29,
-					"entryPoint": "src/OrderService/order_service.get_orders",
+					"entryPoint": "functions/OrderService/order_service.get_orders",
 					"runtime": "python3.9",
 					"endpointUrl": {
 						"enabled": false,
@@ -419,7 +419,7 @@
 					"name": "GetOrderFunction",
 					"memory": 512,
 					"timeout": 29,
-					"entryPoint": "src/OrderService/order_service.get_order",
+					"entryPoint": "functions/OrderService/order_service.get_order",
 					"runtime": "python3.9",
 					"endpointUrl": {
 						"enabled": false,
@@ -563,7 +563,7 @@
 					"name": "UpdateUsagePlanFunction",
 					"memory": 512,
 					"timeout": 29,
-					"entryPoint": "src/custom_resources/update_usage_plan.handler",
+					"entryPoint": "functions/custom_resources/update_usage_plan.handler",
 					"runtime": "python3.9",
 					"endpointUrl": {
 						"enabled": false,
@@ -648,7 +648,7 @@
 					"name": "UpdateTenantApiGatewayUrlFunction",
 					"memory": 512,
 					"timeout": 29,
-					"entryPoint": "src/custom_resources/update_tenant_apigatewayurl.handler",
+					"entryPoint": "functions/custom_resources/update_tenant_apigatewayurl.handler",
 					"runtime": "python3.9",
 					"endpointUrl": {
 						"enabled": false,
@@ -671,7 +671,7 @@
 					"name": "BusinessServicesAuthorizerFunction",
 					"memory": 256,
 					"timeout": 29,
-					"entryPoint": "src/Resources/tenant_authorizer.lambda_handler",
+					"entryPoint": "functions/Resources/tenant_authorizer.lambda_handler",
 					"runtime": "python3.9",
 					"endpointUrl": {
 						"enabled": false,

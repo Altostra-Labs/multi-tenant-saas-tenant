@@ -5,7 +5,7 @@ import json
 import utils
 import logger
 import metrics_manager
-import product_service_dal
+import product_service.dal as product_service_dal
 from decimal import Decimal
 from aws_lambda_powertools import Tracer
 from types import SimpleNamespace

@@ -6,7 +6,7 @@ import os
 import boto3
 from botocore.exceptions import ClientError
 import uuid
-from order_models import Order
+from order_service.models import Order
 import json
 import utils
 from types import SimpleNamespace
