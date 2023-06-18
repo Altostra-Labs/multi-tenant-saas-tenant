@@ -95,7 +95,5 @@ def  encode_to_json_object(inputObject):
     jsonpickle.set_preferred_backend('simplejson')
     return jsonpickle.encode(inputObject, unpicklable=False, use_decimal=True)
 
-
-
-
-
+def get_tenant_id(event):
+    return event['requestContext']['authorizer']['tenantId']

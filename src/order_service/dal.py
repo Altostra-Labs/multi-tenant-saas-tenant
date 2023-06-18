@@ -9,6 +9,7 @@ import uuid
 from order_service.models import Order
 import json
 import utils
+from utils import get_tenant_id
 from types import SimpleNamespace
 import logger
 import random
@@ -17,21 +18,24 @@ from boto3.dynamodb.conditions import Key
 
 is_pooled_deploy = os.environ['IS_POOLED_DEPLOY']
 table_name = os.environ['TABLE_ORDERTABLE']
-dynamodb = None
+
+dynamodb = boto3.resource('dynamodb')
+orders_table = dynamodb.Table(table_name)
 
 suffix_start = 1 
 suffix_end = 10
  
 
-def get_order(event, key):
-    table = __get_dynamodb_table(event, dynamodb)
-
+def get_order(event, orderId):
     try:
-        shardId = key.split(":")[0]
-        orderId = key.split(":")[1] 
-        logger.log_with_tenant_context(event, shardId)
+        tenant_id = get_tenant_id(event)
+        logger.log_with_tenant_context(event, tenant_id)
         logger.log_with_tenant_context(event, orderId)
-        response = table.get_item(Key={'shardId': shardId, 'orderId': orderId})
+        response = orders_table.get_item(Key= {
+            'shardId': tenant_id, 
+            'orderId': orderId,
+        })
+
         item = response['Item']
         order = Order(item['shardId'], item['orderId'], item['orderName'], item['orderProducts'])
 
@@ -41,13 +45,16 @@ def get_order(event, key):
     else:
         return order
 
-def delete_order(event, key):
+def delete_order(event, orderId):
     table = __get_dynamodb_table(event, dynamodb)
     
     try:
-        shardId = key.split(":")[0]
-        orderId = key.split(":")[1] 
-        response = table.delete_item(Key={'shardId':shardId, 'orderId': orderId})
+        tenant_id = get_tenant_id(event)
+        response = table.delete_item(Key= {
+            'shardId':tenant_id, 
+            'orderId': orderId,
+        })
+
     except ClientError as e:
         logger.error(e.response['Error']['Message'])
         raise Exception('Error deleting a order', e)
@@ -57,20 +64,18 @@ def delete_order(event, key):
 
 
 def create_order(event, payload):
-    tenantId = event['requestContext']['authorizer']['tenantId']
-    table = __get_dynamodb_table(event, dynamodb)
-    suffix = random.randrange(suffix_start, suffix_end)
-    shardId = tenantId+"-"+str(suffix)
+    tenantId = get_tenant_id(event)
     
-    order = Order(shardId, str(uuid.uuid4()), payload.orderName, payload.orderProducts)
+    order = Order(tenantId, str(uuid.uuid4()), payload.orderName, payload.orderProducts)
 
     try:
-        response = table.put_item(Item={
-        'shardId':shardId,
-        'orderId': order.orderId, 
-        'orderName': order.orderName,
-        'orderProducts': get_order_products_dict(order.orderProducts)
+        response = orders_table.put_item(Item= {
+            'shardId':tenantId,
+            'orderId': order.orderId, 
+            'orderName': order.orderName,
+            'orderProducts': get_order_products_dict(order.orderProducts)
         })
+
     except ClientError as e:
         logger.error(e.response['Error']['Message'])
         raise Exception('Error adding a order', e)
@@ -78,16 +83,17 @@ def create_order(event, payload):
         logger.info("PutItem succeeded:")
         return order
 
-def update_order(event, payload, key):
-    table = __get_dynamodb_table(event, dynamodb)
-    
+def update_order(event, payload, orderId):
     try:
-        shardId = key.split(":")[0]
-        orderId = key.split(":")[1] 
-        logger.log_with_tenant_context(event, shardId)
+        tenant_id = get_tenant_id(event)
+        logger.log_with_tenant_context(event, tenant_id)
         logger.log_with_tenant_context(event, orderId)
-        order = Order(shardId, orderId,payload.orderName, payload.orderProducts)
-        response = table.update_item(Key={'shardId':order.shardId, 'orderId': order.orderId},
+        
+        order = Order(tenant_id, orderId,payload.orderName, payload.orderProducts)
+        response = orders_table.update_item(Key= {
+            'shardId':order.shardId, 
+            'orderId': order.orderId
+        },
         UpdateExpression="set orderName=:orderName, "
         +"orderProducts=:orderProducts",
         ExpressionAttributeValues={
@@ -102,34 +108,19 @@ def update_order(event, payload, key):
         logger.info("UpdateItem succeeded:")
         return order
 
-def get_orders(event, tenantId):
-    table = __get_dynamodb_table(event, dynamodb)
+def get_orders(event):
     get_all_products_response = []
+    tenantId = get_tenant_id(event)
 
     try:
-        __query_all_partitions(tenantId,get_all_products_response, table)
+        __get_tenant_data(tenantId, get_all_products_response, orders_table)
     except ClientError as e:
         logger.error()
         raise Exception('Error getting all orders', e) 
     else:
         logger.info("Get orders succeeded")
         return get_all_products_response
-
-def __query_all_partitions(tenantId,get_all_products_response, table):
-    threads = []    
     
-    for suffix in range(suffix_start, suffix_end):
-        partition_id = tenantId+'-'+str(suffix)
-        
-        thread = threading.Thread(target=__get_tenant_data, args=[partition_id, get_all_products_response, table])
-        threads.append(thread)
-        
-    # Start threads
-    for thread in threads:
-        thread.start()
-    # Ensure all threads are finished
-    for thread in threads:
-        thread.join()
            
 def __get_tenant_data(partition_id, get_all_products_response, table):    
     logger.info(partition_id)
@@ -139,29 +130,6 @@ def __get_tenant_data(partition_id, get_all_products_response, table):
             order = Order(item['shardId'], item['orderId'], item['orderName'], item['orderProducts'])
             get_all_products_response.append(order)
 
-def __get_dynamodb_table(event, dynamodb):
-    """ Determine the table name based upo pooled vs silo model
-
-    Args:
-        event ([type]): [description]
-
-    Returns:
-        [type]: [description]
-    """
-    if (is_pooled_deploy=='true'):
-        accesskey = event['requestContext']['authorizer']['accesskey']
-        secretkey = event['requestContext']['authorizer']['secretkey']
-        sessiontoken = event['requestContext']['authorizer']['sessiontoken']    
-        dynamodb = boto3.resource('dynamodb',
-                aws_access_key_id=accesskey,
-                aws_secret_access_key=secretkey,
-                aws_session_token=sessiontoken
-                )        
-    else:
-        if not dynamodb:
-            dynamodb = boto3.resource('dynamodb')
-        
-    return dynamodb.Table(table_name)
 
 def get_order_products_dict(orderProducts):
     orderProductList = []
@@ -169,6 +137,3 @@ def get_order_products_dict(orderProducts):
         product = orderProducts[i]
         orderProductList.append(vars(product))
     return orderProductList    
-
-  
-
