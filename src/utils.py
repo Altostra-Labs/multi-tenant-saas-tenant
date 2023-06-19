@@ -4,7 +4,8 @@
 import json
 import jsonpickle
 import simplejson
-
+from types import SimpleNamespace
+from decimal import Decimal
 import boto3
 from aws_requests_auth.aws_auth import AWSRequestsAuth
 from enum import Enum
@@ -97,3 +98,6 @@ def  encode_to_json_object(inputObject):
 
 def get_tenant_id(event):
     return event['requestContext']['authorizer']['tenantId']
+
+def load_body_json(body: str) -> any:
+    return json.loads(body, object_hook=lambda d: SimpleNamespace(**d), parse_float=Decimal)
