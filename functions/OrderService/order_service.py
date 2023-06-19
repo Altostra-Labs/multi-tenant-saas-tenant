@@ -15,7 +15,8 @@ def get_order(event, context):
 
     logger.log_with_tenant_context(event, "Request received to get a order")
     params = event['pathParameters']
-    id = params['id']
+    key = params['id']
+    id = key.split(':').pop()
     logger.log_with_tenant_context(event, params)
     order = order_service_dal.get_order(event, id)
 
@@ -43,7 +44,8 @@ def update_order(event, context):
     logger.log_with_tenant_context(event, "Request received to update a order")
     payload = utils.load_body_json(event['body'])
     params = event['pathParameters']
-    id = params['id']
+    key = params['id']
+    id = key.split(':').pop()
     order = order_service_dal.update_order(event, payload, id)
     logger.log_with_tenant_context(event, "Request completed to update a order") 
     metrics_manager.record_metric(event, "OrderUpdated", "Count", 1)   
@@ -57,7 +59,8 @@ def delete_order(event, context):
 
     logger.log_with_tenant_context(event, "Request received to delete a order")
     params = event['pathParameters']
-    id = params['id']
+    key = params['id']
+    id = key.split(':').pop()
     response = order_service_dal.delete_order(event, id)
     logger.log_with_tenant_context(event, "Request completed to delete a order")
     metrics_manager.record_metric(event, "OrderDeleted", "Count", 1)

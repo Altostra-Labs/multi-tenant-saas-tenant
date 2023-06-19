@@ -17,7 +17,8 @@ def get_product(event, context):
     logger.log_with_tenant_context(event, "Request received to get a product")
     params = event['pathParameters']
     logger.log_with_tenant_context(event, params)
-    id = params['id']
+    key = params['id']
+    id = key.split(':').pop()
     logger.log_with_tenant_context(event, id)
     product = product_service_dal.get_product(event, id)
 
@@ -45,7 +46,8 @@ def update_product(event, context):
     logger.log_with_tenant_context(event, "Request received to update a product")
     payload = utils.load_body_json(event['body'])
     params = event['pathParameters']
-    id = params['id']
+    key = params['id']
+    id = key.split(':').pop()
     product = product_service_dal.update_product(event, payload, id)
     logger.log_with_tenant_context(event, "Request completed to update a product") 
     metrics_manager.record_metric(event, "ProductUpdated", "Count", 1)   
@@ -58,7 +60,8 @@ def delete_product(event, context):
 
     logger.log_with_tenant_context(event, "Request received to delete a product")
     params = event['pathParameters']
-    id = params['id']
+    key = params['id']
+    id = key.split(':').pop()
     response = product_service_dal.delete_product(event, id)
     logger.log_with_tenant_context(event, "Request completed to delete a product")
     metrics_manager.record_metric(event, "ProductDeleted", "Count", 1)
